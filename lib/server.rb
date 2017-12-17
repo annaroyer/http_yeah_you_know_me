@@ -13,7 +13,7 @@ class Server
   def request
     until @path == '/shutdown' do
       client = @server.accept
-      RequestParser.new(client.readpartial(2048))
+      request = Request.new(client.readpartial(2048))
       @requests += 1
       client.puts headers + output
       client.close
@@ -38,17 +38,15 @@ class Server
     elsif @path == '/shutdown'
       "Total requests: #{@requests}"
     elsif @path == '/word_search'
-      search_word(param)
+      search_word(word)
     end
   end
 
-  def search_word(param)
-    dictionary = File.open('/usr/share/dict/words', 'r')
-    if dictionary.include?(param)
-      return "#{param} is a known word"
-    else
-      return "#{param} is not a known word"
+  def search_word(word)
+    File.readlines('/usr/share/dict/words').each do |line|
+      return "#{word} is a known word" if word == line.chomp
     end
+    return "#{word} is not a known word"
   end
 
 
