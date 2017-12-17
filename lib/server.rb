@@ -1,4 +1,5 @@
 require 'socket'
+require './lib/request_parser'
 require 'pry'
 
 class Server
@@ -12,7 +13,7 @@ class Server
   def request
     until @path == '/shutdown' do
       client = @server.accept
-      format_request(client.readpartial(2048))
+      RequestParser.new(client.readpartial(2048))
       @requests += 1
       client.puts headers + output
       client.close
