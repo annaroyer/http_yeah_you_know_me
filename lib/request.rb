@@ -18,6 +18,16 @@ class Request
     end
     headers
   end
+
+  def format
+   "Verb: #{@verb}
+    Path: #{@path}
+    Protocol: #{@protocol}
+    Host: #{@host}
+    Port: #{@port}
+    Origin: #{@host}
+    Accept: #{@accept}"
+  end
 end
 
 binding.pry
