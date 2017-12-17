@@ -1,17 +1,13 @@
 require 'pry'
 
 class Response
-  def route
-    if @path == '/'
-      "#{@formatted_request}"
-    elsif @path == '/hello'
-      "Hello World(#{@requests})"
-    elsif @path == '/datetime'
-      "#{Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")}"
-    elsif @path == '/shutdown'
-      "Total requests: #{@requests}"
-    elsif @path == '/word_search'
-      search_word(param)
+  def route(path)
+    case path
+    when '/' then "#{@formatted_request}"
+    when '/hello' then "Hello World(#{@requests})"
+    when '/datetime' then "#{Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")}"
+    when '/shutdown' then "Total requests: #{@requests}"
+    when '/word_search' then search_word(word)
     end
   end
 
@@ -20,10 +16,6 @@ class Response
       return "#{word} is a known word" if word == line.chomp
     end
     return "#{word} is not a known word"
-  end
-
-  def response
-    "<pre>\n#{route}</pre>"
   end
 end
 

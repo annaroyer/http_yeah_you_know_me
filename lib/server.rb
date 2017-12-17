@@ -63,7 +63,7 @@ class Server
   end
 
   def output
-    "<html><head></head><body>#{response}</body></html>"
+    "<html><head></head><body><pre>#{response}<pre></body></html>"
   end
 end
 
