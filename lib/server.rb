@@ -36,8 +36,20 @@ class Server
       "#{Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")}"
     elsif @path == '/shutdown'
       "Total requests: #{@requests}"
+    elsif @path == '/word_search'
+      search_word(param)
     end
   end
+
+  def search_word(param)
+    dictionary = File.open('/usr/share/dict/words', 'r')
+    if dictionary.include?(param)
+      return "#{param} is a known word"
+    else
+      return "#{param} is not a known word"
+    end
+  end
+
 
   def headers
     ["http/1.1 200 ok",
