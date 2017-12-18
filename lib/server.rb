@@ -1,5 +1,6 @@
 require 'socket'
 require './lib/request'
+require './lib/game'
 require 'pry'
 
 class Server
@@ -9,13 +10,12 @@ class Server
   end
 
   def request
-    loop do
-      client = @server.accept
-      @request = Request.new(client.readpartial(2048))
-      @request_counter += 1
-      client.puts headers + output
-      client.close
-    end
+    client = @server.accept
+    @request = Request.new(client.readpartial(2048))
+    @request_counter += 1
+    client.puts headers + output
+    client.close
+    request unless @request.path == '/shutdown'
   end
 
   def route
@@ -23,16 +23,17 @@ class Server
       when '/hello' then "Hello World! (#{@request_counter})"
       when '/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
       when '/shutdown' then "Total requests: #{@request_counter}"
-      when '/word_search' then search_word(@request.param)
+      when '/word_search' then search_word
+      when '/start_game' then 'Good luck!'
     end
     return response
   end
 
-  def search_word(word)
+  def search_word
     File.readlines('/usr/share/dict/words').each do |line|
-      return "#{word} is a known word" if word == line.chomp
+      return "#{@request.param} is a known word" if @request.param == line.chomp
     end
-    "#{word} is not a known word"
+    "#{@request.param} is not a known word"
   end
 
   def headers
