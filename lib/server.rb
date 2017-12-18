@@ -30,7 +30,7 @@ class Server
 
   def search_word(word)
     File.readlines('/usr/share/dict/words').each do |line|
-      "#{word} is a known word" if word == line.chomp
+      return "#{word} is a known word" if word == line.chomp
     end
     "#{word} is not a known word"
   end
