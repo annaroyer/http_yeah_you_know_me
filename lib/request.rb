@@ -3,22 +3,21 @@ require 'socket'
 
 class Request
   attr_reader :path
-  
+
   def initialize(request)
     @verb, @path, @protocol = request.lines[0].split
-    @host = parse(request.lines)['Host']
-    @accept = parse(request.lines)['Accept']
+    parse(request.lines)
   end
 
   def parse(request)
-    headers = {}
     request[1..-1].each do |line|
-      key, value = line.split(':')
-      if ['Host', 'Accept'].include?(key)
-        headers[key] = value.strip
+      key, value = line.chomp.split(': ')
+      if key == 'Host'
+        @host, @port = value.split(':')
+      elsif key == 'Accept'
+        @accept = value
       end
     end
-    headers
   end
 
   def format
