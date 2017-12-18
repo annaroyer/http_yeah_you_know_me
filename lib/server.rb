@@ -24,7 +24,7 @@ class Server
       when '/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
       when '/shutdown' then "Total requests: #{@request_counter}"
       when '/word_search' then search_word
-      when '/start_game' then 'Good luck!'
+      when '/start_game' then start_game
     end
     return response
   end
@@ -34,6 +34,12 @@ class Server
       return "#{@request.param} is a known word" if @request.param == line.chomp
     end
     "#{@request.param} is not a known word"
+  end
+
+  def start_game
+    game = Game.new
+    game.start
+    
   end
 
   def headers
