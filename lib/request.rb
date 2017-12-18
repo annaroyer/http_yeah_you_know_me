@@ -2,6 +2,8 @@ require 'pry'
 require 'socket'
 
 class Request
+  attr_reader :path
+  
   def initialize(request)
     @verb, @path, @protocol = request.lines[0].split
     @host = parse(request.lines)['Host']

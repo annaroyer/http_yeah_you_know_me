@@ -1,5 +1,5 @@
 require 'socket'
-require './lib/request_parser'
+require './lib/request'
 require 'pry'
 
 class Server
@@ -10,7 +10,7 @@ class Server
   end
 
   def request
-    until @path == '/shutdown' do
+    loop do
       client = @server.accept
       @request = Request.new(client.readpartial(2048))
       @request_counter += 1
@@ -20,20 +20,21 @@ class Server
   end
 
   def route
-    case @request.path
-    when '/' return @request.format
-    when '/hello' return "Hello World(#{@request_counter})"
-    when '/datetime' return "#{Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")}"
-    when '/shutdown' return "Total requests: #{@request_counter}"
-    when '/word_search' return search_word(@request.param)
+    response = case @request.path
+      when '/' then @request.format
+      when '/hello' then "Hello World! (#{@request_counter})"
+      when '/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
+      when '/shutdown' then "Total requests: #{@request_counter}"
+      when '/word_search' then search_word(@request.param)
     end
+    return response
   end
 
   def search_word(word)
     File.readlines('/usr/share/dict/words').each do |line|
-      return "#{word} is a known word" if word == line.chomp
+      "#{word} is a known word" if word == line.chomp
     end
-    return "#{word} is not a known word"
+    "#{word} is not a known word"
   end
 
   def headers
