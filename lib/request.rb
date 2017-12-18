@@ -2,10 +2,12 @@ require 'pry'
 require 'socket'
 
 class Request
-  attr_reader :path
+  attr_reader :path,
+              :param
 
   def initialize(request)
-    @verb, @path, @protocol = request.lines[0].split
+    @verb, path, @protocol = request.lines[0].split
+    @path, @param = path.split('?word=')
     parse(request.lines)
   end
 
@@ -21,7 +23,8 @@ class Request
   end
 
   def format
-   "Verb: #{@verb}
+   "
+    Verb: #{@verb}
     Path: #{@path}
     Protocol: #{@protocol}
     Host: #{@host}

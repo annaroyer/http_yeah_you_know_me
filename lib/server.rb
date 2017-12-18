@@ -3,9 +3,8 @@ require './lib/request'
 require 'pry'
 
 class Server
-  PORT = 9292
   def initialize
-    @server = TCPServer.new(PORT)
+    @server = TCPServer.new(9292)
     @request_counter = 0
   end
 
@@ -21,7 +20,6 @@ class Server
 
   def route
     response = case @request.path
-      when '/' then @request.format
       when '/hello' then "Hello World! (#{@request_counter})"
       when '/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
       when '/shutdown' then "Total requests: #{@request_counter}"
@@ -46,7 +44,10 @@ class Server
   end
 
   def output
-    "<html><head></head><body><pre>#{route}<pre></body></html>"
+    "<html><head></head><body><pre>
+    #{route}
+    #{@request.format}
+    </pre></body></html>"
   end
 end
 
