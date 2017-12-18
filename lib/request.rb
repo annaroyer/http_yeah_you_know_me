@@ -35,4 +35,3 @@ class Request
 end
 
 binding.pry
->>>>>>> fd99b270d501cfc36be928d3fc60c0fb2b7da1da
