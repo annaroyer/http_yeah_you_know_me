@@ -9,10 +9,10 @@ class Request
   def initialize(request)
     @verb, path, @protocol = request.lines[0].split
     @path, @param = path.split('?word=')
-    parse(request.lines)
+    parse_headers(request.lines)
   end
 
-  def parse(request)
+  def parse_headers(request)
     request[1..-1].each do |line|
       key, value = line.chomp.split(': ')
       if key == 'Host'

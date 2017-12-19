@@ -1,9 +1,11 @@
 require 'pry'
+require './lib/Game'
 
-class ResponseRouter
+class Responder
   attr_accessor :request_counter
   def initialize
     @request_counter = 0
+    @guess = 50
   end
 
   def route(request)
@@ -13,7 +15,8 @@ class ResponseRouter
     when 'GET/shutdown' then "Total requests: #{@request_counter}"
     when 'GET/word_search' then search_word(request.param)
     when 'POST/start_game' then start_game
-    when '*/game' then play_game
+    when 'GET/game' then @game.info if @game
+    when 'POST/game' then @game.guess(@guess) if @game
     end
     return response
   end
@@ -23,14 +26,10 @@ class ResponseRouter
     return 'Good luck!'
   end
 
-  def play_game
-    @game.guess(request.guess)
-
-
   def search_word(word)
     File.readlines('/usr/share/dict/words').each do |line|
       return "#{word} is a known word" if word == line.chomp
     end
-    "#{word} is not a known word"
+    return "#{word} is not a known word"
   end
 end

@@ -1,19 +1,18 @@
 require 'socket'
 require './lib/request'
-require './lib/response_router'
-require './lib/game'
+require './lib/responder'
 require 'pry'
 
 class Server
   def initialize
     @server = TCPServer.new(9292)
-    @response_router = ResponseRouter.new
+    @responder = Responder.new
   end
 
   def request
     client = @server.accept
     @request = Request.new(client.readpartial(2048))
-    @response_router.request_counter += 1
+    @responder.request_counter += 1
     client.puts headers + output
     client.close
     request unless @request.path == '/shutdown'
@@ -29,11 +28,10 @@ class Server
 
   def output
     "<html><head></head><body><pre>
-    #{@response_router.route(@request)}
+    #{@responder.route(@request)}
     #{@request.format}
     </pre></body></html>"
   end
 end
-
 
 binding.pry

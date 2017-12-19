@@ -6,11 +6,11 @@ class Game
   end
 
   def info
-    "You have taken #{@guess_counter} guesses" + last_guess
+    return "You have taken #{guess_counter} guesses. " + latest_guess
   end
 
-  def last_guess
-    "Your last guess, #{@guess}, was #{evaluate_guess}" if @guess
+  def latest_guess
+    return "Your latest guess (#{@guess}) was #{evaluate_guess}" if @guess
   end
 
   def evaluate_guess
@@ -26,5 +26,6 @@ class Game
   def guess(guess)
     @guess = guess
     @guess_counter += 1
+    info
   end
 end
