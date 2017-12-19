@@ -2,18 +2,18 @@ class Game
   def initialize
     @random_number = rand(100)
     @guess_counter = 0
-    @guess = guess
   end
 
   def info
-    return "You have taken #{guess_counter} guesses. " + latest_guess
+    total_guesses =  "You have taken #{@guess_counter} guesses. "
+    if @guess
+      return total_guesses + "Your latest guess (#{@guess}) was #{evaluate}"
+    else
+      return total_guesses
+    end
   end
 
-  def latest_guess
-    return "Your latest guess (#{@guess}) was #{evaluate_guess}" if @guess
-  end
-
-  def evaluate_guess
+  def evaluate
     if @guess > @random_number
       return "too high"
     elsif @guess < @random_number

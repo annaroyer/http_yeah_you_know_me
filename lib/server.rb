@@ -11,7 +11,11 @@ class Server
 
   def request
     client = @server.accept
-    @request = Request.new(client.readpartial(2048))
+    request_lines = []
+    while line = client.gets and !line.chomp.empty?
+      request_lines << line.chomp
+    end
+    @request = Request.new(request_lines)
     @responder.request_counter += 1
     client.puts headers + output
     client.close

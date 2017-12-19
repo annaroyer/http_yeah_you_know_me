@@ -15,8 +15,8 @@ class Responder
     when 'GET/shutdown' then "Total requests: #{@request_counter}"
     when 'GET/word_search' then search_word(request.param)
     when 'POST/start_game' then start_game
-    when 'GET/game' then @game.info if @game
-    when 'POST/game' then @game.guess(@guess) if @game
+    when 'GET/game' then @game.info
+    when 'POST/game' then @game.guess(@guess)
     end
     return response
   end
