@@ -5,7 +5,6 @@ class Responder
   attr_accessor :request_counter
   def initialize
     @request_counter = 0
-    @guess = 50
   end
 
   def route(request)
@@ -16,7 +15,7 @@ class Responder
     when 'GET/word_search' then search_word(request.param)
     when 'POST/start_game' then start_game
     when 'GET/game' then @game.info
-    when 'POST/game' then @game.guess(@guess)
+    when 'POST/game' then @game.guess(request.guess)
     end
     return response
   end

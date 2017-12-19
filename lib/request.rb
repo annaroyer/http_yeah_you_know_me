@@ -4,21 +4,30 @@ require 'socket'
 class Request
   attr_reader :path,
               :param,
-              :verb
+              :verb,
+              :guess
 
-  def initialize(request)
-    @verb, path, @protocol = request[0].split
+  def initialize(client)
+    headers = []
+    while line = client.gets and !line.chomp.empty?
+      headers << line.chomp
+    end
+    @verb, path, @protocol = headers[0].split
     @path, @param = path.split('?word=')
-    parse(request)
+    parse(headers)
+    if @verb == 'POST'
+      body = client.read(@content_length)
+      @guess = body.split("\r\n")[3].to_i
+    end
   end
 
-  def parse(request)
-    request[1..-1].each do |line|
+  def parse(headers)
+    headers[1..-1].each do |line|
       key, value = line.chomp.split(': ')
-      if key == 'Host'
-        @host, @port = value.split(':')
-      elsif key == 'Accept'
-        @accept = value
+      case key
+      when 'Host' then @host, @port = value.split(':')
+      when 'Accept' then @accept = value
+      when 'Content-Length' then @content_length = value.to_i
       end
     end
   end
