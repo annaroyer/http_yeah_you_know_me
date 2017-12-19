@@ -1,45 +1,22 @@
 require 'socket'
 require './lib/request'
+require './lib/response_router'
 require './lib/game'
 require 'pry'
 
 class Server
   def initialize
     @server = TCPServer.new(9292)
-    @request_counter = 0
+    @response_router = ResponseRouter.new
   end
 
   def request
     client = @server.accept
     @request = Request.new(client.readpartial(2048))
-    @request_counter += 1
+    @response_router.request_counter += 1
     client.puts headers + output
     client.close
     request unless @request.path == '/shutdown'
-  end
-
-  def route
-    response = case @request.path
-      when '/hello' then "Hello World! (#{@request_counter})"
-      when '/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
-      when '/shutdown' then "Total requests: #{@request_counter}"
-      when '/word_search' then search_word
-      when '/start_game' then start_game
-    end
-    return response
-  end
-
-  def search_word
-    File.readlines('/usr/share/dict/words').each do |line|
-      return "#{@request.param} is a known word" if @request.param == line.chomp
-    end
-    "#{@request.param} is not a known word"
-  end
-
-  def start_game
-    game = Game.new
-    game.start
-    
   end
 
   def headers
@@ -52,7 +29,7 @@ class Server
 
   def output
     "<html><head></head><body><pre>
-    #{route}
+    #{@response_router.route(@request)}
     #{@request.format}
     </pre></body></html>"
   end
