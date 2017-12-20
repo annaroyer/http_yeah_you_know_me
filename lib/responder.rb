@@ -2,13 +2,16 @@ require 'pry'
 require './lib/Game'
 
 class Responder
-  attr_accessor :request_counter
+  attr_reader :response
+
   def initialize
     @request_counter = 0
   end
 
   def route(request)
+    @request_counter += 1
     response = case request.verb + request.path
+    when 'GET/' then request.format
     when 'GET/hello' then "Hello World! (#{@request_counter})"
     when 'GET/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
     when 'GET/shutdown' then "Total requests: #{@request_counter}"
@@ -17,7 +20,25 @@ class Responder
     when 'GET/game' then @game.info
     when 'POST/game' then @game.guess(request.guess)
     end
-    return response
+  end
+
+  def headers
+    ["http/1.1 200 ok",
+     "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+     "server: ruby",
+     "content-type: text/html; charset=iso-8859-1",
+     "content-length: #{@response.length}\r\n\r\n"].join("\r\n")
+  end
+
+  def html(request)
+    @response =
+    "<html><head></head><body><pre>
+    #{route(request)}
+    </pre></body></html>"
+  end
+
+  def output(request)
+    html(request) + headers
   end
 
   def start_game

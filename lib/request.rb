@@ -3,26 +3,16 @@ require 'socket'
 
 class Request
   attr_reader :path,
-              :param,
               :verb,
-              :guess
+              :content_length
 
-  def initialize(client)
-    headers = []
-    while line = client.gets and !line.chomp.empty?
-      headers << line.chomp
-    end
-    @verb, path, @protocol = headers[0].split
-    @path, @param = path.split('?word=')
-    parse(headers)
-    if @verb == 'POST'
-      body = client.read(@content_length)
-      @guess = body.split("\r\n")[3].to_i
-    end
+  def initialize(request_lines)
+    @verb, @path, @protocol = request_lines[0].split
+    parse(request_lines)
   end
 
-  def parse(headers)
-    headers[1..-1].each do |line|
+  def parse(request_lines)
+    request_lines[1..-1].each do |line|
       key, value = line.chomp.split(': ')
       case key
       when 'Host' then @host, @port = value.split(':')
