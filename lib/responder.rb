@@ -6,15 +6,24 @@ class Responder
 
   def initialize
     @request_counter = 0
+    @route =
   end
 
   def route(request)
-    @request_counter += 1
+    
+
+  end
+
+  def respond(request)
+    responses = {'/'=>request.format,
+                 '/hello'=> "Hello World#{@request_counter}"
+                 '/datetime'=>Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
+                 '/shutdown'=>"Total requests: #{@request_counter}"}
+     return responses[request.path]
+   end
+
+  def redirect(request)
     response = case request.verb + request.path
-    when 'GET/' then request.format
-    when 'GET/hello' then "Hello World! (#{@request_counter})"
-    when 'GET/datetime' then Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
-    when 'GET/shutdown' then "Total requests: #{@request_counter}"
     when 'GET/word_search' then search_word(request.param)
     when 'POST/start_game' then start_game
     when 'GET/game' then @game.info
@@ -31,14 +40,13 @@ class Responder
   end
 
   def html(request)
-    @response =
     "<html><head></head><body><pre>
     #{route(request)}
     </pre></body></html>"
   end
 
   def output(request)
-    html(request) + headers
+    headers + html(request)
   end
 
   def start_game

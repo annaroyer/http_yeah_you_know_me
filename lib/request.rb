@@ -4,10 +4,12 @@ require 'socket'
 class Request
   attr_reader :path,
               :verb,
+              :param,
               :content_length
 
   def initialize(request_lines)
-    @verb, @path, @protocol = request_lines[0].split
+    @verb, path, @protocol = request_lines[0].split
+    @path, @param = path.split('?word=')
     parse(request_lines)
   end
 
