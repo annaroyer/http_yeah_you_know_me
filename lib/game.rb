@@ -14,12 +14,12 @@ class Game
   end
 
   def get_info
-    return "#{@guess_counter} total guesses. " + @evaluation
+    return "#{@guess_counter} total guesses." + @evaluation
   end
 
   def guess(guess)
     @guess = guess
-    @evaluation += "Your last guess (#{guess}) was #{evaluate}"
+    @evaluation = " Your last guess (#{guess}) was #{evaluate}"
     @guess_counter += 1
   end
 end
