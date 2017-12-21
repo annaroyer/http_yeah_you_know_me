@@ -1,3 +1,4 @@
+
 require 'socket'
 
 class Request
@@ -39,3 +40,4 @@ class Request
     Accept: #{@accept}"
   end
 end
+
