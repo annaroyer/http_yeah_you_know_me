@@ -1,5 +1,5 @@
 require './test/test_helper'
-require_relative '../lib/game'
+require './lib/game'
 
 class GameTest < Minitest::Test
   def test_it_starts_with_zero_guesses

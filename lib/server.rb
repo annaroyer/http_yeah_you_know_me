@@ -2,7 +2,6 @@ require 'socket'
 require './lib/request'
 require './lib/responder'
 require './lib/game'
-require 'pry'
 
 class Server
   def initialize
@@ -26,7 +25,6 @@ class Server
       request_lines << line.chomp
     end
     @request = Request.new(request_lines)
-    puts request_lines
     read_body if @request.verb + @request.path == 'POST/game'
   end
 
@@ -35,5 +33,3 @@ class Server
     @request.find_guess(body)
   end
 end
-
-binding.pry

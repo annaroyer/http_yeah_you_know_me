@@ -4,7 +4,7 @@ class ServerTest < Minitest::Test
 
   def test_it_responds_to_http_requests_with_valid_html
     skip
-    response = Faraday.get 'http://localhost:9292/hello'
+    response = Faraday.get 'http://127.0.0.1:9292/hello'
 
     expected = "<html><head></head><body><pre>Hello World! (1)<pre></body></html>"
 

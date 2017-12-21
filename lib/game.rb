@@ -1,3 +1,4 @@
+
 class Game
   attr_reader :guess_counter
 
@@ -8,11 +9,8 @@ class Game
   end
 
   def evaluate
-    if @guess
-      evaluations = ['too low', 'correct', 'too high']
-      score = evaluations[@guess <=> @random_number]
-      @evaluation += "Last guess #{@guess} was #{score}"
-    end
+    scores = ['correct', 'too high', 'too low']
+    scores[@guess <=> @random_number]
   end
 
   def get_info
@@ -21,6 +19,7 @@ class Game
 
   def guess(guess)
     @guess = guess
+    @evaluation += "Your last guess (#{guess}) was #{evaluate}"
     @guess_counter += 1
   end
 end

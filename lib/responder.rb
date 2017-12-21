@@ -1,4 +1,3 @@
-require 'pry'
 require './lib/game'
 require './lib/word_search'
 require './lib/packager'
@@ -65,10 +64,10 @@ class Responder
   end
 
   def redirect_headers
-    "http/1.1 302 Moved Permanently
-    location: http://127.0.0.1:9292/game
-    server: ruby
-    content-type: text/html; charset=iso-8859-1
-    content-length: #{output.length}\r\n\r\n"
+    ["HTTP/1.1 302 Moved Permanently",
+     "Location: http://127.0.0.1:9292/game",
+     "Server: ruby",
+     "Content-Type: text/html; charset=iso-8859-1",
+     "Content-Length: #{output.length}\r\n\r\n"].join("\r\n")
   end
 end

@@ -3,8 +3,8 @@ require './lib/request'
 
 class RequestTest < Minitest::Test
   def setup
-    def request_headers(added_lines*)
-      [added_lines,
+    def request_headers(first_line)
+      [first_line,
       "Host: 127.0.0.1:9292",
       "Connection: keep-alive",
       "Cache-Control: no-cache",
@@ -18,9 +18,9 @@ class RequestTest < Minitest::Test
     end
   end
 
-  def test_it_takes_a_request_string_and_finds_the_verb
-    request_1 = request_headers('GET / HTTP/1.1')
-    request_2 = request_headers('POST /start_game HTTP/1.1')
+  def test_it_takes_a_request_array_and_finds_the_verb
+    request_1 = request_headers('GET / HTTP/1.1\n')
+    request_2 = request_headers('POST /start_game HTTP/1.1\n')
 
     result_1 = Request.new(request_1)
     result_2 = Request.new(request_2)
@@ -29,7 +29,7 @@ class RequestTest < Minitest::Test
     assert_equal 'POST', result_2.verb
   end
 
-  def test_it_takes_a_request_string_and_finds_the_path
+  def test_it_takes_a_request_array_and_finds_the_path
     request_1 = request_headers('GET /hello HTTP/1.1')
     request_2 = request_headers('GET /word_search?word=hello HTTP/1.1')
     request_3 = request_headers('GET /datetime HTTP/1.1')
@@ -59,14 +59,30 @@ class RequestTest < Minitest::Test
     assert_equal '/game', result_8.path
   end
 
-#need to get an example post request string to use in all tests calling post requests..
-  def test_it_takes_a_request_string_and_finds_the_content_length_of_body
-    request = request_headers('POST /game HTTP/1.1')
-    request << "content_length = 138"
+  def test_it_takes_a_post_request_array_and_finds_the_content_length_of_body
+    request_1 = request_headers('POST /game HTTP/1.1')
+    request_1 << 'Content-Length: 138'
+    request_2 = request_headers('POST /start_game HTTP/1.1')
+    request_2 << 'Content-Length: 9'
 
+    result_1 = Request.new(request_1)
+    result_2 = Request.new(request_2)
+
+    assert_equal 138, result_1.content_length
+    assert_equal 9, result_2.content_length
   end
 
-  def test_it_takes_a_request_string_and_reformats_the_important_values
+  def test_it_takes_a_post_request_body_string_and_finds_the_parameter
+    request = request_headers('POST /game HTTP/1.1')
+    result = Request.new(request)
+
+    body = "------WebKitFormBoundaryqommBwQNJyHZJ2L8\r\nContent-Disposition: form-data; name='guess'\r\n\r\n28\r\n------WebKitFormBoundaryqommBwQNJyHZJ2L8--"
+    result.find_guess(body)
+
+    assert_equal , result.guess
+  end
+
+  def test_it_takes_a_request_array_and_reformats_the_important_values
     request = request_headers('GET /word_search?word=hello HTTP/1.1')
 
     result = Request.new(request)

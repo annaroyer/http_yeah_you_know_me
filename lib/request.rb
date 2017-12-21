@@ -1,4 +1,3 @@
-require 'pry'
 require 'socket'
 
 class Request
@@ -40,5 +39,3 @@ class Request
     Accept: #{@accept}"
   end
 end
-
-binding.pry
