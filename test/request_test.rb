@@ -50,21 +50,13 @@ class RequestTest < Minitest::Test
 
 
     assert_equal '/hello', result_1.path
-    assert_equal '/word_search', result_2.path
+    assert_equal '/word_search?word=hello', result_2.path
     assert_equal '/datetime', result_3.path
     assert_equal '/shutdown', result_4.path
     assert_equal '/', result_5.path
     assert_equal '/game', result_6.path
     assert_equal '/start_game', result_7.path
     assert_equal '/game', result_8.path
-  end
-
-  def test_it_takes_a_request_string_and_finds_the_param
-    request = request_headers('GET /word_search?word=hello HTTP/1.1')
-
-    result = Request.new(request)
-
-    assert_equal 'hello', result.param
   end
 
 #need to get an example post request string to use in all tests calling post requests..
@@ -80,7 +72,7 @@ class RequestTest < Minitest::Test
     result = Request.new(request)
     expected = "
     Verb: GET
-    Path: /word_search
+    Path: /word_search?word=hello
     Protocol: HTTP/1.1
     Host: 127.0.0.1
     Port: 9292

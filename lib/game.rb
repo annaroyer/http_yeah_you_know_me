@@ -26,6 +26,5 @@ class Game
   def guess(guess)
     @guess = guess
     @guess_counter += 1
-    info
   end
 end

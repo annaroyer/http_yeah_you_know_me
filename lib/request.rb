@@ -4,12 +4,11 @@ require 'socket'
 class Request
   attr_reader :path,
               :verb,
-              :param,
-              :content_length
+              :content_length,
+              :guess
 
   def initialize(request_lines)
-    @verb, path, @protocol = request_lines[0].split
-    @path, @param = path.split('?word=')
+    @verb, @path, @protocol = request_lines[0].split
     parse(request_lines)
   end
 
@@ -22,6 +21,10 @@ class Request
       when 'Content-Length' then @content_length = value.to_i
       end
     end
+  end
+
+  def find_guess(body)
+    @guess = body.split("\r\n")[4].to_i
   end
 
   def format
