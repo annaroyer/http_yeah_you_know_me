@@ -5,10 +5,12 @@ class Request
   attr_reader :path,
               :verb,
               :content_length,
-              :guess
+              :guess,
+              :param
 
   def initialize(request_lines)
     @verb, @path, @protocol = request_lines[0].split
+    @param = @path.split('=')[-1]
     parse(request_lines)
   end
 
@@ -24,7 +26,7 @@ class Request
   end
 
   def find_guess(body)
-    @guess = body.split("\r\n")[4].to_i
+    @guess = body.split("\r\n")[-2].to_i
   end
 
   def format

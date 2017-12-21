@@ -1,26 +1,22 @@
 class Game
-  def initialize
-    @random_number = rand(100)
-    @guess_counter = 0
-  end
+  attr_reader :guess_counter
 
-  def info
-    total_guesses =  "You have taken #{@guess_counter} guesses. "
-    if @guess
-      return total_guesses + "Your latest guess (#{@guess}) was #{evaluate}"
-    else
-      return total_guesses
-    end
+  def initialize(num1=0, num2=100)
+    @random_number = rand(num1..num2)
+    @guess_counter = 0
+    @evaluation = ''
   end
 
   def evaluate
-    if @guess > @random_number
-      return "too high"
-    elsif @guess < @random_number
-      return "too low"
-    else
-      return "correct"
+    if @guess
+      evaluations = ['too low', 'correct', 'too high']
+      score = evaluations[@guess <=> @random_number]
+      @evaluation += "Last guess #{@guess} was #{score}"
     end
+  end
+
+  def get_info
+    return "#{@guess_counter} total guesses. " + @evaluation
   end
 
   def guess(guess)

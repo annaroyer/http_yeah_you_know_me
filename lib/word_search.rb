@@ -4,8 +4,10 @@ class WordSearch
   end
 
   def find(word)
-    File.readlines('/usr/share/dict/words').each do |line|
-      return "#{word} is a known word" if word == line.chomp
+    File.readlines(@dictionary).each do |line|
+      if word == line.chomp
+        return "#{word} is a known word"
+      end
     end
     return "#{word} is not a known word"
   end

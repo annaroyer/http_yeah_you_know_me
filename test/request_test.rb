@@ -3,8 +3,8 @@ require './lib/request'
 
 class RequestTest < Minitest::Test
   def setup
-    def request_headers(first_line)
-      [first_line,
+    def request_headers(added_lines*)
+      [added_lines,
       "Host: 127.0.0.1:9292",
       "Connection: keep-alive",
       "Cache-Control: no-cache",
@@ -61,8 +61,8 @@ class RequestTest < Minitest::Test
 
 #need to get an example post request string to use in all tests calling post requests..
   def test_it_takes_a_request_string_and_finds_the_content_length_of_body
-    skip
     request = request_headers('POST /game HTTP/1.1')
+    request << "content_length = 138"
 
   end
 
