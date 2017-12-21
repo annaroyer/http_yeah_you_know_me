@@ -11,6 +11,5 @@ class PackagerTest < Minitest::Test
     assert_equal packager.output(response), expected
   end
 
-
-
+  
 end

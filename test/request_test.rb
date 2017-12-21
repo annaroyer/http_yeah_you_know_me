@@ -79,7 +79,7 @@ class RequestTest < Minitest::Test
     body = "------WebKitFormBoundaryqommBwQNJyHZJ2L8\r\nContent-Disposition: form-data; name='guess'\r\n\r\n28\r\n------WebKitFormBoundaryqommBwQNJyHZJ2L8--"
     result.find_guess(body)
 
-    assert_equal , result.guess
+    assert_equal 28, result.guess
   end
 
   def test_it_takes_a_request_array_and_reformats_the_important_values

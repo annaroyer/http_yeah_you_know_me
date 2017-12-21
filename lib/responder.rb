@@ -10,17 +10,22 @@ class Responder
   def route(request)
     @request = request
     @request_counter += 1
-    if @request.verb + @request.path == 'POST/game'
+    if @request.verb + @request.path =='POST/game'
       take_guess
     else
-      package_response
+      route_get
     end
   end
 
-  def package_response
+  def take_guess
+    @game.take_guess(@request.guess)
+    return redirect_headers
+  end
+
+  def route_get
     @response = case @request.path
-    when '/word_search' then search_word
     when '/start_game' then start_game
+    when '/word_search' then search_word
     when '/game' then @game.get_info
     else simple_responses[@request.path]
     end
@@ -42,11 +47,6 @@ class Responder
   def start_game
     @game = Game.new
     return 'Good luck!'
-  end
-
-  def take_guess
-    @game.guess(@request.guess)
-    return redirect_headers
   end
 
   def output

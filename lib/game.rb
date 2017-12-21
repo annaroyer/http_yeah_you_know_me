@@ -1,6 +1,6 @@
-
 class Game
-  attr_reader :guess_counter
+  attr_reader :guess_counter,
+              :guess
 
   def initialize(num1=0, num2=100)
     @random_number = rand(num1..num2)
@@ -14,12 +14,12 @@ class Game
   end
 
   def get_info
+    @evaluation = " (#{@guess}) is #{evaluate}" unless @guess_counter == 0
     return "#{@guess_counter} total guesses." + @evaluation
   end
 
-  def guess(guess)
+  def take_guess(guess)
     @guess = guess
-    @evaluation = " Your last guess (#{guess}) was #{evaluate}"
     @guess_counter += 1
   end
 end
