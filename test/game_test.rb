@@ -47,7 +47,7 @@ class GameTest < Minitest::Test
     assert_equal '2 total guesses. (41) is too low', game.get_info
 
     game.take_guess(50)
-    assert_equal '3 total guesses. (50) is correct', game.get_info
+    assert_equal '3 total guesses. (50) ids correct', game.get_info
   end
 
   def test_it_does_not_give_evaluation_before_guesses_are_made_guesses
