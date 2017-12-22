@@ -1,14 +1,18 @@
 require './test/test_helper'
 require './lib/wrapper'
 
-class PackagerTest < Minitest::Test
+class WrapperTest < Minitest::Test
   def test_it_takes_a_response_and_wraps_it_in_html
-    packager = Packager.new
+    wrapper = Wrapper.new(request)
 
-    response = 'Hello World (0)'
+    response = 'Hello World! (0)'
     expected = "<html><head></head><body><pre>Hello World! (0)</pre></body></html>"
 
-    assert_equal packager.output(response), expected
+    assert_equal wrapper.output(response), expected
+  end
+
+  def test_it_creates_a_header_depending_on_the_path
+    
   end
 
 

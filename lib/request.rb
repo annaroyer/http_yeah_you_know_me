@@ -1,4 +1,3 @@
-
 require 'socket'
 
 class Request
@@ -27,6 +26,10 @@ class Request
 
   def find_guess(body)
     @guess = body.split("\r\n")[-2].to_i
+  end
+
+  def location
+    return "Location: http://#{@host}:#{@port}#{@path}"
   end
 
   def format

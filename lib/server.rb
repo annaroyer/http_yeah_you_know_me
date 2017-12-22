@@ -6,15 +6,13 @@ require './lib/wrapper'
 class Server
   def initialize
     @server = TCPServer.new(9292)
-    @request_counter = 0
     @responder = Responder.new
   end
 
   def request
     @client = @server.accept
     read_request
-    @request_counter += 1
-    @client.puts @responder.route(@request)
+    write_response
     @client.close
     request unless @request.path == '/shutdown'
   end
@@ -31,5 +29,11 @@ class Server
   def read_body
     body = @client.read(@request.content_length)
     @request.find_guess(body)
+  end
+
+  def write_response
+    response = @responder.route(@request)
+    wrapper = Wrapper.new(@request, response)
+    @client.puts wrapper.output
   end
 end
