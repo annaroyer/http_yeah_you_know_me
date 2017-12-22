@@ -1,10 +1,10 @@
 require './lib/game'
 require './lib/word_search'
 require './lib/packager'
-
+d
 class Responder
-  attr_reader :read
-  
+  attr_reader :game
+
   def initialize
     @request_counter = 0
   end
@@ -42,8 +42,8 @@ class Responder
   end
 
   def search_word
-    @word_search = WordSearch.new
-    return word_search.find(@request.param)
+    word_search = WordSearch.new
+    word_search.find(@request.param)
   end
 
   def start_game

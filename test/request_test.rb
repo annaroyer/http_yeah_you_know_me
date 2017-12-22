@@ -50,7 +50,7 @@ class RequestTest < Minitest::Test
 
 
     assert_equal '/hello', result_1.path
-    assert_equal '/word_search?word=hello', result_2.path
+    assert_equal '/word_search', result_2.path
     assert_equal '/datetime', result_3.path
     assert_equal '/shutdown', result_4.path
     assert_equal '/', result_5.path
@@ -76,7 +76,10 @@ class RequestTest < Minitest::Test
     request = request_headers('POST /game HTTP/1.1')
     result = Request.new(request)
 
-    body = "------WebKitFormBoundaryqommBwQNJyHZJ2L8\r\nContent-Disposition: form-data; name='guess'\r\n\r\n28\r\n------WebKitFormBoundaryqommBwQNJyHZJ2L8--"
+    body = ["------WebKitFormBoundaryqommBwQNJyHZJ2L8",
+            "Content-Disposition: form-data; name='guess'\r\n",
+            "28",
+            "------WebKitFormBoundaryqommBwQNJyHZJ2L8--"].join("\r\n")
     result.find_guess(body)
 
     assert_equal 28, result.guess
@@ -88,7 +91,7 @@ class RequestTest < Minitest::Test
     result = Request.new(request)
     expected = "
     Verb: GET
-    Path: /word_search?word=hello
+    Path: /word_search
     Protocol: HTTP/1.1
     Host: 127.0.0.1
     Port: 9292

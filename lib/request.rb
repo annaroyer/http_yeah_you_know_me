@@ -9,8 +9,8 @@ class Request
               :param
 
   def initialize(request_lines)
-    @verb, @path, @protocol = request_lines[0].split
-    @param = @path.split('=')[-1]
+    @verb, path, @protocol = request_lines[0].split
+    @path, @param = path.split('?word=')
     parse(request_lines)
   end
 
@@ -40,4 +40,3 @@ class Request
     Accept: #{@accept}"
   end
 end
-
