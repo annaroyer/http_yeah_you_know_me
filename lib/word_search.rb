@@ -5,9 +5,7 @@ class WordSearch
 
   def find(word)
     File.readlines(@dictionary).each do |line|
-      if word == line.chomp
-        return "#{word} is a known word"
-      end
+      return "#{word} is a known word" if word == line.chomp
     end
     return "#{word} is not a known word"
   end

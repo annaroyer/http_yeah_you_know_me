@@ -1,4 +1,3 @@
-
 require 'socket'
 
 class Request
@@ -9,8 +8,8 @@ class Request
               :param
 
   def initialize(request_lines)
-    @verb, @path, @protocol = request_lines[0].split
-    @param = @path.split('=')[-1]
+    @verb, path, @protocol = request_lines[0].split
+    @path, @param = path.split('?word=')
     parse(request_lines)
   end
 
@@ -29,6 +28,10 @@ class Request
     @guess = body.split("\r\n")[-2].to_i
   end
 
+  def location
+    return "Location: http://#{@host}:#{@port}#{@path}\r\n"
+  end
+
   def format
    "
     Verb: #{@verb}
@@ -40,4 +43,3 @@ class Request
     Accept: #{@accept}"
   end
 end
-

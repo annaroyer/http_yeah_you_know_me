@@ -1,8 +1,9 @@
 require './lib/game'
 require './lib/word_search'
-require './lib/packager'
 
 class Responder
+  attr_reader :game
+
   def initialize
     @request_counter = 0
   end
@@ -10,64 +11,42 @@ class Responder
   def route(request)
     @request = request
     @request_counter += 1
-    if @request.verb + @request.path =='POST/game'
-      take_guess
-    else
-      route_get
+    case @request.verb
+    when 'POST' then route_post
+    when 'GET' then route_get
     end
   end
 
-  def take_guess
-    @game.take_guess(@request.guess)
-    return redirect_headers
+  def route_post
+    case @request.path
+    when '/start_game' then @game = Game.new
+    when '/game' then @game.take_guess(@request.guess)
+    end
   end
 
   def route_get
-    @response = case @request.path
-    when '/start_game' then start_game
+    case @request.path
     when '/word_search' then search_word
     when '/game' then @game.get_info
     else simple_responses[@request.path]
     end
-    return headers + output
   end
 
   def simple_responses
     {'/' => @request.format,
      '/hello' => "Hello World! (#{@request_counter})",
      '/datetime' => Time.now.strftime("%I:%M%p on %A, %B %-d, %Y"),
-     '/shutdown' => "Total requests: #{@request_counter}"}
+     '/shutdown' => "Total requests: #{@request_counter}",
+     '/start_game' => 'Good luck!'}
   end
 
   def search_word
-    @word_search = WordSearch.new
-    return word_search.find(@request.param)
+    word_search = WordSearch.new
+    word_search.find(@request.param)
   end
 
   def start_game
     @game = Game.new
     return 'Good luck!'
-  end
-
-  def output
-    "<html><head></head><body><pre>
-    #{@response}
-    </pre></body></html>"
-  end
-
-  def headers
-     "http/1.1 200 ok
-     date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}
-     server: ruby
-     content-type: text/html; charset=iso-8859-1
-     content-length: #{output.length}\r\n\r\n"
-  end
-
-  def redirect_headers
-    ["HTTP/1.1 302 Moved Permanently",
-     "Location: http://127.0.0.1:9292/game",
-     "Server: ruby",
-     "Content-Type: text/html; charset=iso-8859-1",
-     "Content-Length: #{output.length}\r\n\r\n"].join("\r\n")
   end
 end
