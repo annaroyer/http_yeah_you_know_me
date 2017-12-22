@@ -29,7 +29,7 @@ class Request
   end
 
   def location
-    return "Location: http://#{@host}:#{@port}#{@path}"
+    return "Location: http://#{@host}:#{@port}#{@path}\r\n"
   end
 
   def format
