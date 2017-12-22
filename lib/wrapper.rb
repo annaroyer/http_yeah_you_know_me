@@ -24,5 +24,5 @@ class Wrapper
      "Server: ruby\r\n",
      "Content-Type: text/html; charset=iso-8859-1\r\n",
      "Content-Length: #{@output.length}\r\n\r\n"].join
-   end
+  end
 end

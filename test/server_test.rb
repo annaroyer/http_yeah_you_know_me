@@ -50,5 +50,4 @@ class ServerTest < Minitest::Test
 
     assert_equal expected, response.body
   end
-
 end

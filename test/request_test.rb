@@ -18,17 +18,6 @@ class RequestTest < Minitest::Test
     end
   end
 
-  def test_it_takes_a_request_array_and_finds_the_verb
-    request_1 = request_headers('GET / HTTP/1.1\n')
-    request_2 = request_headers('POST /start_game HTTP/1.1\n')
-
-    result_1 = Request.new(request_1)
-    result_2 = Request.new(request_2)
-
-    assert_equal 'GET', result_1.verb
-    assert_equal 'POST', result_2.verb
-  end
-
   def test_it_takes_a_request_array_and_finds_the_path
     request_1 = request_headers('GET /hello HTTP/1.1')
     request_2 = request_headers('GET /word_search?word=hello HTTP/1.1')
@@ -59,7 +48,18 @@ class RequestTest < Minitest::Test
     assert_equal '/game', result_8.path
   end
 
-  def test_it_takes_a_request_and_finds_the_parameter
+  def test_it_takes_a_request_array_and_finds_the_verb
+    request_1 = request_headers('GET / HTTP/1.1\n')
+    request_2 = request_headers('POST /start_game HTTP/1.1\n')
+
+    result_1 = Request.new(request_1)
+    result_2 = Request.new(request_2)
+
+    assert_equal 'GET', result_1.verb
+    assert_equal 'POST', result_2.verb
+  end
+
+  def test_it_takes_a_get_request_and_finds_the_parameter
     request = request_headers('GET /word_search?word=hello HTTP/1.1')
     result = Request.new(request)
 
@@ -105,5 +105,16 @@ class RequestTest < Minitest::Test
     Origin: 127.0.0.1
     Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
     assert_equal expected, result.format
+  end
+
+  def test_it_returns_the_location_parameter_for_a_redirect
+    request_1 = request_headers('POST /game HTTP/1.1')
+    request_2 = request_headers('POST /start_game HTTP/1.1')
+
+    result_1 = Request.new(request_1)
+    result_2 = Request.new(request_2)
+
+    assert_equal "Location: http://127.0.0.1:9292/game\r\n", result_1.location
+    assert_equal "Location: http://127.0.0.1:9292/start_game\r\n", result_2.location
   end
 end
