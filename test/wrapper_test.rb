@@ -89,4 +89,19 @@ class WrapperTest < Minitest::Test
 
     assert_equal expected, wrapper.output
   end
+
+  def test_it_outputs_headers_with_changed_location_for_post_requests
+    request_line_headers = request_headers('POST /start_game HTTP/1.1')
+    request = Request.new(request_line_headers)
+    result = '4 total guesses. 89 was too high'
+    wrapper = Wrapper.new(request, result)
+
+    expected = ["HTTP/1.1 302 Moved Permanently",
+      "Location: http://127.0.0.1:9292/start_game",
+      "Server: ruby",
+      "Content-Type: text/html; charset=iso-8859-1",
+      "Content-Length: #{81}\r\n\r\n"].join("\r\n")
+
+    assert_equal expected, wrapper.output
+  end
 end
