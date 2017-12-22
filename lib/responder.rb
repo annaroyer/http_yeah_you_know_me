@@ -37,8 +37,9 @@ class Responder
               '/hello' => "Hello World! (#{@request_counter})",
               '/datetime' => Time.now.strftime("%I:%M%p on %A, %B %-d, %Y"),
               '/shutdown' => "Total requests: #{@request_counter}",
-              '/start_game' => 'Good luck!'}
-    output.default = '404 Forbidden'
+              '/start_game' => 'Good luck!',
+              '/force_error' => '500 SystemError'}
+    output.default = '404 Not Found'
     return output[@request.path]
   end
 
