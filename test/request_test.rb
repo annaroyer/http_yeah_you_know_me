@@ -59,6 +59,13 @@ class RequestTest < Minitest::Test
     assert_equal '/game', result_8.path
   end
 
+  def test_it_takes_a_request_and_finds_the_parameter
+    request = request_headers('GET /word_search?word=hello HTTP/1.1')
+    result = Request.new(request)
+
+    assert_equal 'hello', result.param
+  end
+
   def test_it_takes_a_post_request_array_and_finds_the_content_length_of_body
     request_1 = request_headers('POST /game HTTP/1.1')
     request_1 << 'Content-Length: 138'

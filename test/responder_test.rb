@@ -126,5 +126,4 @@ class ResponderTest < Minitest::Test
 
     assert_equal 28, responder.game.guess
   end
-
 end
