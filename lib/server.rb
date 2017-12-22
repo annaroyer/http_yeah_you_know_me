@@ -14,7 +14,7 @@ class Server
     read_request
     write_response
     @client.close
-    unless @request.path == '/shutdown' || @requst.path == '/force_error'
+    unless @request.path == '/shutdown' || @request.path == '/force_error'
       request
     end
   end

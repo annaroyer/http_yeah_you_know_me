@@ -19,7 +19,7 @@ class Responder
 
   def route_post
     case @request.path
-    when '/start_game' then @game = Game.new unless @game
+    when '/start_game' then @game = Game.new
     when '/game' then @game.take_guess(@request.guess)
     end
   end
