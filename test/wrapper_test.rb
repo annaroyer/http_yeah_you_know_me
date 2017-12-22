@@ -17,13 +17,6 @@ class WrapperTest < Minitest::Test
       "Accept-Encoding: gzip, deflate, br",
       "Accept-Language: en-US,en;q=0.9"]
     end
-    request_2 = request_headers('GET /word_search?word=hello HTTP/1.1')
-    request_3 = request_headers('GET /datetime HTTP/1.1')
-    request_4 = request_headers('GET /shutdown HTTP/1.1')
-    request_5 = request_headers('GET / HTTP/1.1')
-    request_6 = request_headers('GET /game HTTP/1.1')
-    request_7 = request_headers('POST /start_game HTTP/1.1')
-    request_8 = request_headers('GET /game HTTP/1.1')
   end
 
   def test_it_creates_a_header_depending_on_the_path
@@ -35,25 +28,65 @@ class WrapperTest < Minitest::Test
     expected = ["HTTP/1.1 200 ok",
       "Server: ruby",
       "Content-Type: text/html; charset=iso-8859-1",
-      "Content-Length: #{65}\r\n"].join("\r\n")
+      "Content-Length: #{65}\r\n\r\n"].join("\r\n")
 
     assert_equal expected, wrapper.headers
   end
 
-  def test_it_creates_a_different_header_for_a_different_request
+  def test_it_creates_a_different_header_for_a_post_request
     request_line_headers = request_headers('POST /start_game HTTP/1.1')
     request = Request.new(request_line_headers)
     result = '4 total guesses. 89 was too high'
     wrapper = Wrapper.new(request, result)
 
     expected = ["HTTP/1.1 302 Moved Permanently",
-      "Location: http://127.0.0.1:9292/start_game",
       "Server: ruby",
       "Content-Type: text/html; charset=iso-8859-1",
-      "Content-Length: #{81}\r\n"].join("\r\n")
+      "Content-Length: #{81}\r\n\r\n"].join("\r\n")
 
     assert_equal expected, wrapper.headers
   end
 
-  def 
+  def test_it_creates_a_header_for_a_system_error
+    request_line_headers = request_headers('GET /force_error HTTP/1.1')
+    request = Request.new(request_line_headers)
+    result = '500 SystemError'
+    wrapper = Wrapper.new(request, result)
+
+    expected = ["HTTP/1.1 500 Internal Server Error",
+      "Server: ruby",
+      "Content-Type: text/html; charset=iso-8859-1",
+      "Content-Length: #{64}\r\n\r\n"].join("\r\n")
+
+    assert_equal expected, wrapper.headers
+  end
+
+  def test_it_creates_a_header_for_an_unknown_path
+    request_line_headers = request_headers('GET /fomafalou HTTP/1.1')
+    request = Request.new(request_line_headers)
+    result = '404 Not Found'
+    wrapper = Wrapper.new(request, result)
+
+    expected = ["HTTP/1.1 404 Not Found",
+      "Server: ruby",
+      "Content-Type: text/html; charset=iso-8859-1",
+      "Content-Length: #{62}\r\n\r\n"].join("\r\n")
+
+    assert_equal expected, wrapper.headers
+  end
+
+  def test_it_builds_header_and_body_output
+    request_line_headers = request_headers('GET /datetime HTTP/1.1')
+    request = Request.new(request_line_headers)
+    result = Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")
+    wrapper = Wrapper.new(request, result)
+
+    expected = ["HTTP/1.1 200 ok\r\n",
+      "Server: ruby\r\n",
+      "Content-Type: text/html; charset=iso-8859-1\r\n",
+      "Content-Length: #{85}\r\n\r\n",
+      "<html><head></head><body><pre>#{result}<pre></body></html>"].join
+
+    assert_equal expected, wrapper.output
+  end
 end
