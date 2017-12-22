@@ -99,7 +99,7 @@ class ResponderTest < Minitest::Test
   def test_get_start_game_request_starts_a_new_game
     responder = Responder.new
     assert_nil responder.game
-    request_lines = request_headers('GET /start_game http/1.1')
+    request_lines = request_headers('POST /start_game http/1.1')
     request = Request.new(request_lines)
     responder.route(request)
 
@@ -108,7 +108,7 @@ class ResponderTest < Minitest::Test
 
   def test_it_responds_to_post_game_requests_by_making_a_new_guess_in_game
     responder = Responder.new
-    request_lines_1 = request_headers('GET /start_game http/1.1')
+    request_lines_1 = request_headers('POST /start_game http/1.1')
     request_start = Request.new(request_lines_1)
     responder.route(request_start)
 
