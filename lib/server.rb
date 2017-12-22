@@ -14,7 +14,9 @@ class Server
     read_request
     write_response
     @client.close
-    request unless @request.path == '/shutdown'
+    unless @request.path == '/shutdown' || @requst.path == '/force_error'
+      request
+    end
   end
 
   def read_request

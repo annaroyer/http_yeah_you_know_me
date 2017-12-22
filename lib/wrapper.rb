@@ -2,7 +2,7 @@ class Wrapper
 
   STATUS_CODES = {'POST/game' => "302 Moved Permanently",
                   'POST/start_game' => '302 Moved Permanently',
-                  'POST/force_error' => '302 Moved Permanently',
+                  'POST/force_error' => '500 Internal Server Error',
                   'GET/' => "200 ok",
                   'GET/word_search' => '200 ok',
                   'GET/hello' => '200 ok',
