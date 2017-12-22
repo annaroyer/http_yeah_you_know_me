@@ -76,7 +76,6 @@ class ResponderTest < Minitest::Test
     responder = Responder.new
     request_lines = request_headers('GET /word_search?word=hello http/1.1')
     request = Request.new(request_lines)
-    binding.pry
     assert_equal 'hello is a known word', responder.route(request)
   end
 

@@ -1,6 +1,5 @@
 require './lib/game'
 require './lib/word_search'
-require './lib/packager'
 
 class Responder
   attr_reader :game

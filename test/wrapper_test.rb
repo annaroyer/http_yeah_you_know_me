@@ -1,5 +1,5 @@
 require './test/test_helper'
-require './lib/packager'
+require './lib/wrapper'
 
 class PackagerTest < Minitest::Test
   def test_it_takes_a_response_and_wraps_it_in_html
@@ -11,5 +11,5 @@ class PackagerTest < Minitest::Test
     assert_equal packager.output(response), expected
   end
 
-  
+
 end

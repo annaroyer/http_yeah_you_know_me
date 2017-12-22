@@ -1,7 +1,7 @@
 require 'socket'
 require './lib/request'
 require './lib/responder'
-require './lib/game'
+require './lib/wrapper'
 
 class Server
   def initialize
