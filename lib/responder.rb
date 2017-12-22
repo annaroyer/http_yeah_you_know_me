@@ -28,25 +28,22 @@ class Responder
     case @request.path
     when '/word_search' then search_word
     when '/game' then @game.get_info
-    else simple_responses[@request.path]
+    else simple_responses
     end
   end
 
   def simple_responses
-    {'/' => @request.format,
-     '/hello' => "Hello World! (#{@request_counter})",
-     '/datetime' => Time.now.strftime("%I:%M%p on %A, %B %-d, %Y"),
-     '/shutdown' => "Total requests: #{@request_counter}",
-     '/start_game' => 'Good luck!'}
+    output = {'/' => @request.format,
+              '/hello' => "Hello World! (#{@request_counter})",
+              '/datetime' => Time.now.strftime("%I:%M%p on %A, %B %-d, %Y"),
+              '/shutdown' => "Total requests: #{@request_counter}",
+              '/start_game' => 'Good luck!'}
+    output.default = '404 Forbidden'
+    return output[@request.path]
   end
 
   def search_word
     word_search = WordSearch.new
     word_search.find(@request.param)
-  end
-
-  def start_game
-    @game = Game.new
-    return 'Good luck!'
   end
 end

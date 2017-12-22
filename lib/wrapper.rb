@@ -1,16 +1,26 @@
 class Wrapper
 
-  STATUS_CODES = {'POST' => "302 Moved Permanently", "GET" => "200 ok"}
+  STATUS_CODES = {'POST/game' => "302 Moved Permanently",
+                  'POST/start_game' => '302 Moved Permanently',
+                  'GET/' => "200 ok",
+                  'GET/word_search' => '200 ok',
+                  'GET/hello' => '200 ok',
+                  'GET/game' => '200 ok',
+                  'GET/start_game' => '200 ok',
+                  'GET/datetime' => '200 ok',
+                  'GET/shutdown' => '200 ok'}
+  STATUS_CODES.default = '404 Forbidden'
 
   def initialize(request, response)
     @request = request
-    @status_code = STATUS_CODES[@request.verb]
+    @key = @request.verb + @request.path
+    @status_code = STATUS_CODES[@key]
     @location = nil
     @output = "<html><head></head><body><pre>#{response}<pre></body></html>"
   end
 
   def output
-    if @request.verb == 'POST'
+    if @status_code == '302 Moved Permanently'
       @location = @request.location
       return headers
     else
@@ -19,7 +29,7 @@ class Wrapper
   end
 
   def headers
-    ["HTTP/1.1 302 Moved Permanently\r\n",
+    ["HTTP/1.1 #{@status_code}\r\n",
      @location,
      "Server: ruby\r\n",
      "Content-Type: text/html; charset=iso-8859-1\r\n",
