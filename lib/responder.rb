@@ -3,6 +3,8 @@ require './lib/word_search'
 require './lib/packager'
 
 class Responder
+  attr_reader :read
+  
   def initialize
     @request_counter = 0
   end
@@ -19,7 +21,7 @@ class Responder
 
   def take_guess
     @game.take_guess(@request.guess)
-    return redirect_headers
+    # return redirect_headers
   end
 
   def route_get
@@ -29,7 +31,7 @@ class Responder
     when '/game' then @game.get_info
     else simple_responses[@request.path]
     end
-    return headers + output
+    # return headers + output
   end
 
   def simple_responses
@@ -56,7 +58,7 @@ class Responder
   end
 
   def headers
-     "http/1.1 200 ok
+    "http/1.1 200 ok
      date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}
      server: ruby
      content-type: text/html; charset=iso-8859-1

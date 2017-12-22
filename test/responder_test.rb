@@ -1,9 +1,11 @@
 require './test/test_helper'
 require './lib/responder'
+require './lib/request'
+require './lib/word_search'
+require '.lib/game'
 
 class ResponderTest < Minitest::Test
   def setup
-    @responder = Responder.new
     def request_headers(first_line)
       [first_line,
       "Host: 127.0.0.1:9292",
@@ -20,7 +22,97 @@ class ResponderTest < Minitest::Test
   end
 
   def test_it_responds_to_get_root_with_debugging_information
-    @request = Request.new()
+    responder = Responder.new
+    request_lines = request_headers('GET / http/1.1')
+    request = Request.new(request_lines)
+
+    assert_equal request.format, responder.route(request)
+  end
+
+  def test_it_responds_to_get_hello_with_hello_world_and_request_count
+    responder = Responder.new
+    request_lines = request_headers('GET /hello http/1.1')
+    request = Request.new(request_lines)
+
+    assert_equal 'Hello World! (1)', responder.route(request)
+  end
+
+  def test_it_increments_the_request_counter_each_new_request
+    responder = Responder.new
+    request_lines = request_headers('GET /hello http/1.1')
+    request_1 = Request.new(request_lines)
+    responder.route(request_1)
+    request_2 = Request.new(request_lines)
+
+    assert_equal 'Hello World! (2)', responder.route(request_2)
+
+    2.times {responder.route(Request.new(request_lines))}
+    request_5 = Request.new(request_lines)
+
+    assert_equal 'Hello World! (5)', responder.route(request_5)
+  end
+
+  def test_it_responds_to_get_datetime_with_the_current_date_and_time
+    responder = Responder.new
+    request_lines = request_headers('GET /datetime http/1.1')
+    request = Request.new(request_lines)
+
+    assert_equal "#{Time.now.strftime("%I:%M%p on %A, %B %-d, %Y")}" responder(request)
+  end
+
+  def test_it_responds_to_get_shutdown_with_total_requests
+    responder = Responder.new
+    request_lines = request_headers('GET / http/1.1')
+    5.times {responder(Request.new(request_lines))}
+    request_lines_2 = request_headers('GET /shutdown http/1.1')
+    request_6 = Request.new
+
+    assert_equal 'Total requests: 6', responder.route(request_6)
+  end
+
+  def test_it_responds_to_a_get_word_search_request_with_a_word_search_result
+    responder = Responder.new
+    request_lines = request_headers('GET /word_search?hello http/1.1')
+    request = Request.new(request_lines)
+
+    assert_equal 'hello is a known word', responder.route(request)
+  end
+
+  def test_it_responds_to_a_get_start_game_request_with_good_luck
+    responder = Responder.new
+    request_lines = request_headers('GET /start_game http/1.1')
+    request = Request.new(request_lines)
+
+    assert_equal 'Good luck!', responder.route(request)
+  end
+
+  def test_get_start_game_request_starts_a_new_game
+    responder = Responder.new
+    assert_nil responder.game
+    request_lines = request_headers('GET /start_game http/1.1')
+    request = Request.new(request_lines)
+    assert_instance_of Game, responder.route(request)game
+  end
+
+  def test_it_responds_to_post_game_requests_by_making_a_new_guess_in_game
+    responder = Responder.new
+    request_lines_1 = request_headers('GET /start_game http/1.1')
+    request_start = Request.new(request_lines_1)
+    responder.route(request_start)
+
+    assert_nil responder.game.guess
+
+    request_lines_2 = request_headers('POST /game http/1.1')
+    request_guess = Request.new(request_lines_2)
+    request_guess_body = "------WebKitFormBoundaryqommBwQNJyHZJ2L8
+                          Content-Disposition: form-data; name='guess'
+
+                          28
+                          ------WebKitFormBoundaryqommBwQNJyHZJ2L8--"
+    request_guess.get_guess(request_guess_body)
+    responder.route(request_guess)
+
+    assert_equal 28, responder.game.guess
   end
 
 end
